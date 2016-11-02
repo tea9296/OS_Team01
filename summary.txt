@@ -1,0 +1,23 @@
+gent Process
+
+wait(agentSem);
+
+//Pick two ingredients
+
+// if ingredients are tobacco and paper then
+
+signal(tobacco);
+
+signal(paper);
+
+// else if ingredients are paper and match then
+
+signal(paper);
+
+signal(match);
+
+// else if ingredients are tobacco and match then
+
+signal(tobacco);
+
+signal(match); 
