@@ -4,102 +4,144 @@
 #include<mutex>
 #include<chrono>
 using namespace std;
-int Privide_tabacoo=0, Privide_paper=0, Privide_match=0;
-int Paper=0, Tabacoo=0, Match=0;
-mutex agent_mutex;
-mutex smoker_tabacoo_mutex;
+int Privide_tobacco=0, Privide_paper=0, Privide_match=0;
+int Paper=0, Tobacco=0, Match=0;
+mutex agent_tobacco_mutex;
+mutex agent_paper_mutex;
+mutex agent_match_mutex;
+mutex smoker_tobacco_mutex;
 mutex smoker_paper_mutex;
 mutex smoker_match_mutex;
+mutex random_mutex;
 void Random(){
-	int x;
-	x = rand()%3;
-	if(x == 0){
-		Paper = 0;
-		Tabacoo = 1;
-		Match = 1;
-	}
-	else if(x ==1){
-		Paper = 1;
-		Tabacoo = 0;
-		Match = 1;
-	}
-	else{
-		Paper = 1;
-		Tabacoo = 1;
-		Match = 0;
+	while(1){
+		random_mutex.lock();
+		int x;
+		x = rand()%3;
+		if(x == 0){
+			Paper = 0;
+			Tobacco = 1;
+			Match = 1;
+		}
+		else if(x ==1){
+			Paper = 1;
+			Tobacco = 0;
+			Match = 1;
+		}
+		else{
+			Paper = 1;
+			Tobacco = 1;
+			Match = 0;
+		}
+		agent_tobacco_mutex.unlock();
+		agent_paper_mutex.unlock();
+		agent_match_mutex.unlock();
 	}
 }
-void agent_Tabacoo(){
-	if(Tabacoo){
-		Privide_tabacoo = 1;
-		cout<<"Agent privide Tabacoo!\n";
+void agent_Tobacco(){
+	while(1){
+		agent_tobacco_mutex.lock();	
+		if(Tobacco){
+			Privide_tobacco = 1;
+			cout<<"Agent privide Tabacoo!\n";
+		}
+		smoker_tobacco_mutex.unlock();
+		smoker_paper_mutex.unlock();
+		smoker_match_mutex.unlock();
 	}
 }
 void agent_Paper(){
-	if(Paper){
-		Privide_paper = 1;
-		cout<<"Agent privide Paper!\n";
-	}
+	while(1){
+		agent_paper_mutex.lock();
+		if(Paper){
+			Privide_paper = 1;
+			cout<<"Agent privide Paper!\n";
+		}
+		/*		smoker_tobacco_mutex.unlock();
+				smoker_paper_mutex.unlock();
+				smoker_match_mutex.unlock();
+				*/	}
 }
 void agent_Match(){
-	if(Match){
-		Privide_match = 1;
-		cout<<"Agent privide Match!\n";
-	}
+	while(1){
+		agent_match_mutex.lock();
+		if(Match){
+			Privide_match = 1;
+			cout<<"Agent privide Match!\n";
+		}
+		/*		smoker_tobacco_mutex.unlock();
+				smoker_paper_mutex.unlock();
+				smoker_match_mutex.unlock();
+				*/	}
 }
-void smoker_Tabacoo(){
-	if(Privide_paper && Privide_match){
-		cout<<"Smoker_Tabacoo go to smoke...\n";
-		Privide_paper = 0;
-		Privide_match = 0;
-		this_thread::sleep_for(chrono::seconds(1));
-//		sleep(2);
+void smoker_Tobacco(){
+	while(1){
+		smoker_tobacco_mutex.lock();
+		if(Privide_paper && Privide_match){
+			cout<<"Smoker_Tobacco go to smoke...\n\n";
+			Privide_paper = 0;
+			Privide_match = 0;
+			this_thread::sleep_for(chrono::seconds(2));
+/*			agent_tobacco_mutex.unlock();
+			agent_paper_mutex.unlock();
+			agent_match_mutex.unlock();
+*/			random_mutex.unlock();
+		}
 	}
 }
 void smoker_Paper(){
-	if(Privide_tabacoo && Privide_match){
-		cout<<"Smoker_Paper go to smoke...\n";
-		Privide_tabacoo = 0;
-		Privide_match =0;
-		this_thread::sleep_for(chrono::seconds(1));
-//		sleep(2);
+	while(1){
+		smoker_paper_mutex.lock();
+		if(Privide_tobacco && Privide_match){
+			cout<<"Smoker_Paper go to smoke...\n\n";
+			Privide_tobacco = 0;
+			Privide_match =0;
+			this_thread::sleep_for(chrono::seconds(2));
+/*			agent_tobacco_mutex.unlock();
+			agent_paper_mutex.unlock();
+			agent_match_mutex.unlock();
+*/			random_mutex.unlock();
+		}
 	}
 }
 void smoker_Match(){
-	if(Privide_paper && Privide_tabacoo){
-		cout<<"Smoker_Match go to smoke...\n";
-		Privide_paper = 0;
-		Privide_tabacoo = 0;
-		this_thread::sleep_for(chrono::seconds(1));
+	while(1){
+		smoker_match_mutex.lock();
+		if(Privide_paper && Privide_tobacco){
+			cout<<"Smoker_Match go to smoke...\n\n";
+			Privide_paper = 0;
+			Privide_tobacco = 0;
+			this_thread::sleep_for(chrono::seconds(2));
+/*			agent_tobacco_mutex.unlock();
+			agent_paper_mutex.unlock();
+			agent_match_mutex.unlock();
+*/			random_mutex.unlock();
+		}
 	}
 }
 int main(){
 	int i=0;
 	srand(time(NULL));
 	cout<<endl;
-	while(i<3){
-		thread Thread_Random(Random);		
-		Thread_Random.join();
+	thread Thread_Random(Random);		
+	thread Thread_Agent_Tobacco(agent_Tobacco);
+	thread Thread_Agent_Paper(agent_Paper);
+	thread Thread_Agent_Match(agent_Match);
 
-		thread Thread_Agent_Tabocoo(agent_Tabacoo);
-		thread Thread_Agent_Paper(agent_Paper);
-		thread Thread_Agent_Match(agent_Match);
-/*		Thread_Agent_Tabocoo.join();
+	thread Thread_Smoker_Tobacco(smoker_Tobacco);
+	thread Thread_Smoker_Paper(smoker_Paper);
+	thread Thread_Smoker_Match(smoker_Match);
+
+	/*	Thread_Agent_Tobacco.join();
 		Thread_Agent_Paper.join();
 		Thread_Agent_Match.join();
-*/
-		thread Thread_Smoker_Tabacoo(smoker_Tabacoo);
-		thread Thread_Smoker_Paper(smoker_Paper);
-		thread Thread_Smoker_Match(smoker_Match);
-
-		Thread_Agent_Tabocoo.join();
-		Thread_Agent_Paper.join();
-		Thread_Agent_Match.join();
-		Thread_Smoker_Tabacoo.join();
-		Thread_Smoker_Paper.join();
-		Thread_Smoker_Match.join();
-		i++;
-		cout<<endl;
-	}
+		*/
+	Thread_Random.join();
+	Thread_Agent_Tobacco.join();
+	Thread_Agent_Paper.join();
+	Thread_Agent_Match.join();
+	Thread_Smoker_Tobacco.join();
+	Thread_Smoker_Paper.join();
+	Thread_Smoker_Match.join();
 	return 0;
 }
