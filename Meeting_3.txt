@@ -1,0 +1,9 @@
+2016.12.28(三)
+
+Done:
+1. QT with C++
+2. 寄信問助教問題
+
+Future:
+1. 在程式碼中增加UI變數
+2. quit button
