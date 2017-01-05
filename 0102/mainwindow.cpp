@@ -11,9 +11,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->label_4->setText("Match");
-    ui->label->setText("I'm Smoker1,I can't smoke");
-    ui->label_2->setText("I'm Smoker2,I can't smoke");
-    ui->label_3->setText("I'm Smoker3,I can't smoke");
+    ui->label->setText("Smoker1--Match");
+    ui->label_2->setText("Smoker2--Tobacco");
+    ui->label_3->setText("Smoker3--Paper");
     ui->label_5->setText("Tobacco");
     ui->label_6->setText("Paper");
     ui->label->setStyleSheet("background-color: rgba(0,0,0,0.6)");
@@ -78,23 +78,24 @@ void MainWindow::setPmonoOFF()
 void MainWindow::setMatchOFF()
 {
 
-    ui->label->setText("I'm Smoker1,I can't smoke");
+   // ui->label->setText("I'm Smoker1,I can't smoke");
     ui->label->setStyleSheet("background-color: rgba(0,0,0,0.6)");
 }
 void MainWindow::setTabaccoOFF()
 {
-    ui->label_2->setText("I'm Smoker2,I can't smoke");
+   // ui->label_2->setText("I'm Smoker2,I can't smoke");
     ui->label_2->setStyleSheet("background-color: rgba(0,0,0,0.6)");
 }
 void MainWindow::setPaperOFF()
 {
-    ui->label_3->setText("I'm Smoker3,I can't smoke");
+   // ui->label_3->setText("I'm Smoker3,I can't smoke");
     ui->label_3->setStyleSheet("background-color: rgba(0,0,0,0.6)");
 }
 void MainWindow::setMatchON()
 {
     ui->label->setText("I got Tobacco and Paper and I can smoke!!");
     ui->label->setStyleSheet("background-color: rgba(255,0,0,0.6)");
+
 
 }
 void MainWindow::setTabaccoON()
@@ -109,8 +110,34 @@ void MainWindow::setPaperON()
     ui->label_3->setStyleSheet("background-color: rgba(255,0,0,0.6)");
 }
 
+void MainWindow::LIGHTM()
+{     ui->label->setText("I'm Smoker1,I can't smoke");
+      ui->label->setStyleSheet("background-color: rgba(255,0,0,0.6)");
+ }
 
+void MainWindow::LIGHTT()
+{     ui->label_2->setText("I'm Smoker2,I can't smoke");
+      ui->label_2->setStyleSheet("background-color: rgba(255,0,0,0.6)");
+ }
+void MainWindow::LIGHTP()
+{     ui->label_3->setText("I'm Smoker3,I can't smoke");
+      ui->label_3->setStyleSheet("background-color: rgba(255,0,0,0.6)");
+ }
 
+void MainWindow::OFF_LIGHTM()
+{     ui->label->setText("Smoker1--Match");
+      ui->label->setStyleSheet("background-color: rgba(0,0,0,0.6)");
+ }
+
+void MainWindow::OFF_LIGHTT()
+{     ui->label_2->setText("Smoker2--Tobacco");
+
+      ui->label_2->setStyleSheet("background-color: rgba(0,0,0,0.6)");
+ }
+void MainWindow::OFF_LIGHTP()
+{     ui->label_3->setText("Smoker3--Paper");
+      ui->label_3->setStyleSheet("background-color: rgba(0,0,0,0.6)");
+ }
 
 void MainWindow::stop()
 {

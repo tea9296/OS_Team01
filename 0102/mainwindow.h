@@ -17,6 +17,12 @@ public:
     QString app="why?";
 
     int Tk();
+    void LIGHTM();
+    void LIGHTT();
+    void LIGHTP();
+    void OFF_LIGHTM();
+    void OFF_LIGHTT();
+    void OFF_LIGHTP();
     void setMmonoOFF();
     void setBmonoOFF();
     void setPmonoOFF();

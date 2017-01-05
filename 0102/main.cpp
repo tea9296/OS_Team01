@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <QPushButton>
 #include <QObject>
+#include <random>
 using namespace std;
 MainWindow *w;
 int agent=-1;
@@ -20,6 +21,7 @@ int paper=0;//light_paper
 int light_s1=0;//S_match
 int light_s2=0;//S_tobacco
 int light_s3=0;//S_paper
+int s1=0,s2=0,s3=0;
 int Text=0,stop=0;
 
 mutex agent_Mutex;
@@ -104,8 +106,18 @@ void agent_3(){
 void smoke_match(){
     while(1){
         smoker_Mutex1.lock();
+        unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+        default_random_engine generator(seed);
+        poisson_distribution<int> distribution(2.5);
+        int number = distribution(generator);
+        while(number>5||number<0){
+            number = distribution(generator);
+        }
+        this_thread::sleep_for(chrono::seconds(number));
         if(tobacco==1 && paper==1){
+           s1=-1;
             light_s1=1;
+
             cout << "Hey, I'm match.\n";
             Text=1;
           //   Sleep(2000);
@@ -115,11 +127,19 @@ void smoke_match(){
             cout << "goto smoke!\n";
             Text=4;
           //  Sleep(2000);
-           this_thread::sleep_for(chrono::seconds(2));
+           this_thread::sleep_for(chrono::seconds(5));
             cout << "Agent wake up!\n";
             Text=5;
             light_s1=0;
+            s1=0;
             agent_Mutex.unlock();
+        }
+        else{
+            light_s1=-1;
+            s1=1;
+            this_thread::sleep_for(chrono::seconds(1));
+            s1=0;
+             light_s1=0;
         }
     }
 }
@@ -127,8 +147,19 @@ void smoke_match(){
 void smoke_tobacco(){
     while(1){
         smoker_Mutex2.lock();
+        unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+        default_random_engine generator(seed);
+        poisson_distribution<int> distribution(2.5);
+
+        int number = distribution(generator);
+        while(number>5||number<0){
+            number = distribution(generator);
+        }
+        this_thread::sleep_for(chrono::seconds(number));
         if(match==1 && paper==1){
+            s2=-1;
             light_s2=1;
+
             cout << "Hey, I'm tobacco.\n";
             Text=2;
           //   Sleep(2000);
@@ -138,20 +169,43 @@ void smoke_tobacco(){
             cout << "goto smoke!\n";
             Text=4;
            // Sleep(2000);
-           this_thread::sleep_for(chrono::seconds(2));
+           this_thread::sleep_for(chrono::seconds(5));
             cout << "Agent wake up!\n";
             Text=5;
             light_s2=0;
+            s2=0;
             agent_Mutex.unlock();
+        }
+        else{
+             light_s2=-1;
+            s2=1;
+            this_thread::sleep_for(chrono::seconds(1));
+            s2=0;
+             light_s2=0;
         }
     }
 }
 
+
+/////////////////////////////////////////////////////////////////
+/// \brief smoke_paper
+///
 void smoke_paper(){
     while(1){
         smoker_Mutex3.lock();
+        unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+        default_random_engine generator(seed);
+        poisson_distribution<int> distribution(2.5);
+
+        int number = distribution(generator);
+        while(number>5||number<0){
+            number = distribution(generator);
+        }
+        this_thread::sleep_for(chrono::seconds(number));
         if(match==1 && tobacco==1){
+            s3=-1;
             light_s3=1;
+
             cout << "Hey, I'm paper.\n";
             Text=3;
             // Sleep(2000);
@@ -162,11 +216,19 @@ void smoke_paper(){
             cout << "goto smoke!\n";
             Text=4;
             //Sleep(2000);
-            this_thread::sleep_for(chrono::seconds(2));
+            this_thread::sleep_for(chrono::seconds(5));
             cout << "Agent wake up!\n";
             Text=5;
             light_s3=0;
+            s3=0;
             agent_Mutex.unlock();
+        }
+        else{
+             light_s3=-1;
+            s3=1;
+            this_thread::sleep_for(chrono::seconds(1));
+            s3=0;
+             light_s3=0;
         }
     }
 }
@@ -216,6 +278,9 @@ int main( int argc, char** argv){
             w->setMatchOFF();
             QApplication::processEvents();
         }
+        else if(light_s1==-1){
+
+        }
         if(light_s2==1){
             w->setTabaccoON();
             QApplication::processEvents();
@@ -224,6 +289,9 @@ int main( int argc, char** argv){
             w->setTabaccoOFF();
             QApplication::processEvents();
         }
+        else if(light_s2==-1){
+
+        }
         if(light_s3==1){
             w->setPaperON();
             QApplication::processEvents();
@@ -231,6 +299,9 @@ int main( int argc, char** argv){
         else if(light_s3==0){
             w->setPaperOFF();
             QApplication::processEvents();
+        }
+        else if(light_s3==-1){
+
         }
         if(match==1){
             w->setMmonoON();
@@ -277,6 +348,43 @@ int main( int argc, char** argv){
             w->setAnn("Agent wake up!");
             QApplication::processEvents();
         }
+
+        if(s1==1){
+            w->LIGHTM();
+            QApplication::processEvents();
+        }
+        else if(s1==0){
+            w->OFF_LIGHTM();
+            QApplication::processEvents();
+        }
+        else if(s1==-1){
+
+        }
+
+        if(s2==1){
+            w->LIGHTT();
+            QApplication::processEvents();
+        }
+        else if(s2==0){
+            w->OFF_LIGHTT();
+            QApplication::processEvents();
+        }
+        else if(s2==-1){
+
+        }
+
+        if(s3==1){
+            w->LIGHTP();
+            QApplication::processEvents();
+        }
+        else if(s3==0){
+            w->OFF_LIGHTP();
+            QApplication::processEvents();
+        }
+        else if(s3==-1){
+
+        }
+
         if(stop==1)
         {
             while(stop==1)
